@@ -242,6 +242,9 @@ public:
     /// mode. Called automatically by the constructor.
     void    enableOutputs();
 
+    // Fast square root method to avoid computational overheads
+    double fastSquareRoot(double value);
+
 protected:
 
     /// Forces the library to compute a new instantaneous speed and set that as

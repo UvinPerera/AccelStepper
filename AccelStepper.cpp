@@ -89,15 +89,15 @@ float AccelStepper::desiredSpeed()
     if (distanceTo == 0)
 	return 0.0; // Were there
     else if (distanceTo > 0) // Clockwise
-	requiredSpeed = sqrt(2.0 * distanceTo * _acceleration);
+	requiredSpeed = fastSquareRoot(2.0 * distanceTo * _acceleration);
     else  // Anticlockwise
-	requiredSpeed = -sqrt(2.0 * -distanceTo * _acceleration);
+	requiredSpeed = -fastSquareRoot(2.0 * -distanceTo * _acceleration);
 
     if (requiredSpeed > _speed)
     {
 	// Need to accelerate in clockwise direction
 	if (_speed == 0)
-	    requiredSpeed = sqrt(2.0 * _acceleration);
+	    requiredSpeed = fastSquareRoot(2.0 * _acceleration);
 	else
 	    requiredSpeed = _speed + abs(_acceleration / _speed);
 	if (requiredSpeed > _maxSpeed)
@@ -107,7 +107,7 @@ float AccelStepper::desiredSpeed()
     {
 	// Need to accelerate in anticlockwise direction
 	if (_speed == 0)
-	    requiredSpeed = -sqrt(2.0 * _acceleration);
+	    requiredSpeed = -fastSquareRoot(2.0 * _acceleration);
 	else
 	    requiredSpeed = _speed - abs(_acceleration / _speed);
 	if (requiredSpeed < -_maxSpeed)
@@ -346,5 +346,34 @@ void AccelStepper::runToNewPosition(long position)
 {
     moveTo(position);
     runToPosition();
+}
+
+double AccelStepper::fastSquareRoot(double value)
+{
+    // Assuming the sqrt of n as n only
+    double x = n;
+ 
+    // The closed guess will be stored in the root
+    double root;
+ 
+    // To count the number of iterations
+    int count = 0;
+ 
+    while (1) {
+        count++;
+ 
+        // Calculate more closed x
+        root = 0.5 * (x + (n / x));
+ 
+        // Check for closeness
+        if (abs(root - x) < 0.01)
+            break;
+ 
+        // Update root
+        x = root;
+    }
+ 
+    return root;
+    
 }
 
